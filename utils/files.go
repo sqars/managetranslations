@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"os"
@@ -117,6 +118,9 @@ func PromptFiles(s *ishell.Shell, msg, filePattern string) (selectedFilePaths []
 	selectedFilePathIdx := s.Checklist(filePaths, msg, []int{})
 	for _, filePathIdx := range selectedFilePathIdx {
 		selected = append(selected, filePaths[filePathIdx])
+	}
+	if len(selected) == 0 {
+		return nil, errors.New("No files selected")
 	}
 	return selected, nil
 }

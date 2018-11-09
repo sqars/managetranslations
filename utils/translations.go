@@ -83,3 +83,24 @@ func UpdateTranslations(data, pool Translation) Translation {
 	fmt.Println(fmt.Sprintf("%d translation keys updated", count))
 	return data
 }
+
+// Addkey adds empty translation key to translation
+func Addkey(data Translation, key string) Translation {
+	for lang := range data {
+		data[lang][key] = ""
+	}
+	return data
+}
+
+// RemoveKey removes providen key from translation
+func RemoveKey(data Translation, key string) Translation {
+	for lang := range data {
+		_, ok := data[lang][key]
+		if ok {
+			delete(data[lang], key)
+		} else {
+			fmt.Println(fmt.Sprintf(`Cant find translation key: "%s" for lang: "%s"`, key, lang))
+		}
+	}
+	return data
+}

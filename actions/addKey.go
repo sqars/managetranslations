@@ -50,17 +50,10 @@ func (a *AddTranslation) Perform(filePath, keyToAdd string) error {
 	if err != nil {
 		return err
 	}
-	modifiedTranslations := addkey(translationData, keyToAdd)
+	modifiedTranslations := utils.Addkey(translationData, keyToAdd)
 	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func addkey(data utils.Translation, key string) utils.Translation {
-	for lang := range data {
-		data[lang][key] = ""
-	}
-	return data
 }

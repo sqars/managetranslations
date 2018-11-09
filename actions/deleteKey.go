@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"fmt"
-
 	"github.com/abiosoft/ishell"
 	"github.com/sqars/managetranslations/config"
 	"github.com/sqars/managetranslations/utils"
@@ -52,22 +50,10 @@ func (a *DeleteTranslation) Perform(filePath, keyToRemove string) error {
 	if err != nil {
 		return err
 	}
-	modifiedTranslations := removeKey(translationData, keyToRemove)
+	modifiedTranslations := utils.RemoveKey(translationData, keyToRemove)
 	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func removeKey(data utils.Translation, key string) utils.Translation {
-	for lang := range data {
-		_, ok := data[lang][key]
-		if ok {
-			delete(data[lang], key)
-		} else {
-			fmt.Println(fmt.Sprintf(`Cant find translation key: "%s" for lang: "%s"`, key, lang))
-		}
-	}
-	return data
 }
