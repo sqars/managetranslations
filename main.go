@@ -13,6 +13,7 @@ func main() {
 	actions := []actions.Action{
 		actions.NewAddTranslation(),
 		actions.NewDeleteTranslation(),
+		actions.NewUpdateTranslationFromExisting(),
 	}
 
 	options := []string{}

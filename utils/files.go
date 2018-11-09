@@ -2,14 +2,10 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
-
-// Translation represents translation format written in JSON file
-type Translation map[string]map[string]string
 
 // GetTranslationFilePaths search for translation file paths
 // in working directory and returns it
@@ -23,7 +19,6 @@ func GetTranslationFilePaths() (paths []string, err error) {
 		if err != nil {
 			return err
 		}
-		fmt.Println(path + "/*i18n*")
 		paths, err := filepath.Glob(path + "/*i18n*")
 		if err != nil {
 			return err

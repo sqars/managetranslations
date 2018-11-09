@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+
 	"github.com/abiosoft/ishell"
 	"github.com/sqars/managetranslations/utils"
 )
@@ -63,6 +65,8 @@ func removeKey(data utils.Translation, key string) utils.Translation {
 		_, ok := data[lang][key]
 		if ok {
 			delete(data[lang], key)
+		} else {
+			fmt.Println(fmt.Sprintf(`Cant find translation key: "%s" for lang: "%s"`, key, lang))
 		}
 	}
 	return data
