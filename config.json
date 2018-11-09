@@ -1,4 +1,4 @@
 {
-  "JSONFilePattern": "/*i18n*",
-  "CSVFilePattern": "/*.csv"
+	"JSONFilePattern": "/*i18n*",
+	"CSVFilePattern": "/*.csv"
 }
