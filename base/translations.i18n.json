@@ -1,12 +1,16 @@
 {
 	"en": {
+		"CSV_tr_1": "en_val1",
 		"asdsad": "asdsad",
 		"key": "en_translation",
+		"some new tr": "",
 		"someother": "value"
 	},
 	"pl": {
+		"CSV_tr_1": "pl_val1",
 		"asdsad": "asdsad",
 		"key": "pl_translation",
+		"some new tr": "",
 		"someother": "value"
 	}
 }

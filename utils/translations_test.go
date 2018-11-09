@@ -62,3 +62,42 @@ func Test_mergeTranslations(t *testing.T) {
 		})
 	}
 }
+
+func Test_csvToTranslationFormat(t *testing.T) {
+	type args struct {
+		data [][]string
+	}
+	tests := []struct {
+		name string
+		args args
+		want Translation
+	}{
+		{
+			name: "Test case 1",
+			args: args{
+				data: [][]string{
+					[]string{"", "en", "pl"},
+					[]string{"CSV_tr_1", "en_tr_1", "pl_tr_1"},
+					[]string{"CSV_tr_2", "en_tr_2", "pl_tr_2"},
+				},
+			},
+			want: Translation{
+				"en": map[string]string{
+					"CSV_tr_1": "en_tr_1",
+					"CSV_tr_2": "en_tr_2",
+				},
+				"pl": map[string]string{
+					"CSV_tr_1": "pl_tr_1",
+					"CSV_tr_2": "pl_tr_2",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := csvToTranslationFormat(tt.args.data); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("csvToTranslationFormat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

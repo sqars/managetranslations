@@ -2,19 +2,22 @@ package actions
 
 import (
 	"github.com/abiosoft/ishell"
+	"github.com/sqars/managetranslations/config"
 	"github.com/sqars/managetranslations/utils"
 )
 
 // NewAddTranslation creates instance of AddTranslation struct
-func NewAddTranslation() *AddTranslation {
+func NewAddTranslation(conf config.Config) *AddTranslation {
 	return &AddTranslation{
-		name: "Add translation key",
+		name:   "Add translation key",
+		config: conf,
 	}
 }
 
 // AddTranslation struct of operation of adding translation key
 type AddTranslation struct {
-	name string
+	name   string
+	config config.Config
 }
 
 // GetName returns name of Action
@@ -24,14 +27,11 @@ func (a *AddTranslation) GetName() string {
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
 func (a *AddTranslation) PromptActionDetails(s *ishell.Shell) error {
-	filePaths, err := utils.GetTranslationFilePaths()
-	selectedFilePaths := []string{}
+	selectedFilePaths, err := utils.PromptFiles(
+		s, "Select file(s) to add translation key", a.config.JSONFilePattern,
+	)
 	if err != nil {
 		return err
-	}
-	selectedFilePathIdx := s.Checklist(filePaths, "Choose file(s) to add translation:", []int{})
-	for _, filePathIdx := range selectedFilePathIdx {
-		selectedFilePaths = append(selectedFilePaths, filePaths[filePathIdx])
 	}
 	s.Println("Type translation key to add:")
 	translationKey := s.ReadLine()

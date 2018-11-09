@@ -1,14 +1,16 @@
 {
 	"en": {
+		"CSV_tr_2": "existing",
 		"andAnother": "value",
+		"asdsad": "asdsad",
 		"key": "en_translation",
-		"someother": "value",
-		"asdsad": "asdsad"
+		"someother": "value"
 	},
 	"pl": {
+		"CSV_tr_2": "pl_val2",
 		"andAnother": "value",
+		"asdsad": "asdsad",
 		"key": "pl_translation",
-		"someother": "value",
-		"asdsad": "asdsad"
+		"someother": "value"
 	}
 }

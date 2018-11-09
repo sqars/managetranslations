@@ -2,19 +2,22 @@ package actions
 
 import (
 	"github.com/abiosoft/ishell"
+	"github.com/sqars/managetranslations/config"
 	"github.com/sqars/managetranslations/utils"
 )
 
 // NewUpdateTranslationFromExisting creates instance of UpdateTranslationFromExisting struct
-func NewUpdateTranslationFromExisting() *UpdateTranslationFromExisting {
+func NewUpdateTranslationFromExisting(conf config.Config) *UpdateTranslationFromExisting {
 	return &UpdateTranslationFromExisting{
-		name: "Update empty translations from existing pool",
+		name:   "Update empty translations from existing pool",
+		config: conf,
 	}
 }
 
 // UpdateTranslationFromExisting struct of operation of updating empty translations from existing pool
 type UpdateTranslationFromExisting struct {
-	name string
+	name   string
+	config config.Config
 }
 
 // GetName returns name of Action
@@ -24,14 +27,11 @@ func (a *UpdateTranslationFromExisting) GetName() string {
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
 func (a *UpdateTranslationFromExisting) PromptActionDetails(s *ishell.Shell) error {
-	filePaths, err := utils.GetTranslationFilePaths()
-	selectedFilePaths := []string{}
+	selectedFilePaths, err := utils.PromptFiles(
+		s, "Select file(s) to update with existing translations", a.config.JSONFilePattern,
+	)
 	if err != nil {
 		return err
-	}
-	selectedFilePathIdx := s.Checklist(filePaths, "Choose file(s) to update translations:", []int{})
-	for _, filePathIdx := range selectedFilePathIdx {
-		selectedFilePaths = append(selectedFilePaths, filePaths[filePathIdx])
 	}
 	existingPool, err := utils.GetExistingPool()
 	if err != nil {
@@ -52,24 +52,10 @@ func (a *UpdateTranslationFromExisting) Perform(filePath string, existingPool ut
 	if err != nil {
 		return err
 	}
-	modifiedTranslations := updateTranslations(translationData, existingPool)
+	modifiedTranslations := utils.UpdateTranslations(translationData, existingPool)
 	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func updateTranslations(data, pool utils.Translation) utils.Translation {
-	for lang, keys := range data {
-		for key, translation := range keys {
-			existingTranslation, ok := pool[lang][key]
-			if len(translation) == 0 && ok {
-				if len(existingTranslation) > 0 {
-					data[lang][key] = existingTranslation
-				}
-			}
-		}
-	}
-	return data
 }
