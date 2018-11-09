@@ -1,23 +1,22 @@
 package actions
 
 import (
-	"github.com/abiosoft/ishell"
-	"github.com/sqars/managetranslations/config"
+	"errors"
+
 	"github.com/sqars/managetranslations/utils"
 )
 
 // NewAddTranslation creates instance of AddTranslation struct
-func NewAddTranslation(conf config.Config) *AddTranslation {
+func NewAddTranslation() *AddTranslation {
 	return &AddTranslation{
-		name:   "Add translation key",
-		config: conf,
+		name: "Add translation key",
 	}
 }
 
 // AddTranslation struct of operation of adding translation key
 type AddTranslation struct {
-	name   string
-	config config.Config
+	name     string
+	modifier TranslationModifier
 }
 
 // GetName returns name of Action
@@ -25,35 +24,34 @@ func (a *AddTranslation) GetName() string {
 	return a.name
 }
 
+// GetModifierFn returns function which modifies translations for action
+func (a *AddTranslation) GetModifierFn() TranslationModifier {
+	return a.addKey
+}
+
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *AddTranslation) PromptActionDetails(s *ishell.Shell) error {
-	selectedFilePaths, err := utils.PromptFiles(
-		s, "Select file(s) to add translation key", a.config.JSONFilePattern,
+func (a *AddTranslation) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+	details := ActionDetails{}
+	selectedFilePaths, err := d.PromptFiles(
+		s, "Select file(s) to add translation key", d.getJSONConfig(),
 	)
 	if err != nil {
-		return err
+		return details, err
 	}
 	s.Println("Type translation key to add:")
 	translationKey := s.ReadLine()
-	for _, path := range selectedFilePaths {
-		err := a.Perform(path, translationKey)
-		if err != nil {
-			return err
-		}
+	if len(translationKey) == 0 {
+		return details, errors.New("No translation key provided")
 	}
-	return nil
+	details.selectedFilesPaths = selectedFilePaths
+	details.translationKey = translationKey
+	return details, nil
 }
 
-// Perform adds translation key to file
-func (a *AddTranslation) Perform(filePath, keyToAdd string) error {
-	translationData, err := utils.GetJSONTranslationData(filePath)
-	if err != nil {
-		return err
+// Addkey adds empty translation key to translation
+func (a *AddTranslation) addKey(data utils.Translation, d ActionDetails) utils.Translation {
+	for lang := range data {
+		data[lang][d.translationKey] = ""
 	}
-	modifiedTranslations := utils.Addkey(translationData, keyToAdd)
-	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
-	if err != nil {
-		return err
-	}
-	return nil
+	return data
 }

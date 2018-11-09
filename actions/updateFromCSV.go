@@ -1,23 +1,19 @@
 package actions
 
 import (
-	"github.com/abiosoft/ishell"
-	"github.com/sqars/managetranslations/config"
 	"github.com/sqars/managetranslations/utils"
 )
 
 // NewUpdateFromCSV creates instance of UpdateFromCSV struct
-func NewUpdateFromCSV(conf config.Config) *UpdateFromCSV {
+func NewUpdateFromCSV() *UpdateFromCSV {
 	return &UpdateFromCSV{
-		name:   "Update empty translations from CSV file",
-		config: conf,
+		name: "Update empty translations from CSV file",
 	}
 }
 
 // UpdateFromCSV struct of operation of updating empty translations from CSV file
 type UpdateFromCSV struct {
-	name   string
-	config config.Config
+	name string
 }
 
 // GetName returns name of Action
@@ -25,47 +21,40 @@ func (a *UpdateFromCSV) GetName() string {
 	return a.name
 }
 
+// GetModifierFn returns function which modifies translations for action
+func (a *UpdateFromCSV) GetModifierFn() TranslationModifier {
+	return a.updateTranslations
+}
+
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *UpdateFromCSV) PromptActionDetails(s *ishell.Shell) error {
-	selectedTransationFilePaths, err := utils.PromptFiles(
+func (a *UpdateFromCSV) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+	details := ActionDetails{}
+	selectedTransationFilePaths, err := d.PromptFiles(
 		s,
 		"Select translation file(s) to update from CSV",
-		a.config.JSONFilePattern,
+		d.getJSONConfig(),
 	)
 	if err != nil {
-		return err
+		return details, err
 	}
-	selectedCSVFilePaths, err := utils.PromptFiles(
+	selectedCSVFilePaths, err := d.PromptFiles(
 		s,
 		"Select CSV file(s) with translations",
-		a.config.CSVFilePattern,
+		d.getCSVConfig(),
 	)
 	if err != nil {
-		return err
+		return details, err
 	}
 	csvData, err := utils.GetCSVTranslationData(selectedCSVFilePaths)
 	if err != nil {
-		return err
+		return details, err
 	}
-	for _, path := range selectedTransationFilePaths {
-		err := a.Perform(path, csvData)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	details.selectedFilesPaths = selectedTransationFilePaths
+	details.translations = csvData
+	return details, nil
 }
 
-// Perform updates missing translations with existing one from pool
-func (a *UpdateFromCSV) Perform(filePath string, csvData utils.Translation) error {
-	translationData, err := utils.GetJSONTranslationData(filePath)
-	if err != nil {
-		return err
-	}
-	modifiedTranslations := utils.UpdateTranslations(translationData, csvData)
-	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
-	if err != nil {
-		return err
-	}
-	return nil
+// UpdateTranslations updates translation from pool(existing translations)
+func (a *UpdateFromCSV) updateTranslations(data utils.Translation, d ActionDetails) utils.Translation {
+	return utils.UpdateTranslations(data, d.translations)
 }

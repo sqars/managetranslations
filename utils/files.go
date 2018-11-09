@@ -4,13 +4,10 @@ import (
 	"bufio"
 	"encoding/csv"
 	"encoding/json"
-	"errors"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/abiosoft/ishell"
 )
 
 // GetFilePaths search for required files and returns file paths
@@ -106,21 +103,4 @@ func SaveJSONTranslationData(path string, data Translation) error {
 		return err
 	}
 	return nil
-}
-
-// PromptFiles asks user to select files to work with
-func PromptFiles(s *ishell.Shell, msg, filePattern string) (selectedFilePaths []string, err error) {
-	filePaths, err := GetFilePaths(filePattern)
-	selected := []string{}
-	if err != nil {
-		return nil, err
-	}
-	selectedFilePathIdx := s.Checklist(filePaths, msg, []int{})
-	for _, filePathIdx := range selectedFilePathIdx {
-		selected = append(selected, filePaths[filePathIdx])
-	}
-	if len(selected) == 0 {
-		return nil, errors.New("No files selected")
-	}
-	return selected, nil
 }

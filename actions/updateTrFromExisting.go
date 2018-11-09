@@ -1,23 +1,20 @@
 package actions
 
 import (
-	"github.com/abiosoft/ishell"
-	"github.com/sqars/managetranslations/config"
 	"github.com/sqars/managetranslations/utils"
 )
 
 // NewUpdateTranslationFromExisting creates instance of UpdateTranslationFromExisting struct
-func NewUpdateTranslationFromExisting(conf config.Config) *UpdateTranslationFromExisting {
+func NewUpdateTranslationFromExisting() *UpdateTranslationFromExisting {
 	return &UpdateTranslationFromExisting{
-		name:   "Update empty translations from existing pool",
-		config: conf,
+		name: "Update empty translations from existing pool",
 	}
 }
 
 // UpdateTranslationFromExisting struct of operation of updating empty translations from existing pool
 type UpdateTranslationFromExisting struct {
-	name   string
-	config config.Config
+	name     string
+	modifier TranslationModifier
 }
 
 // GetName returns name of Action
@@ -25,37 +22,30 @@ func (a *UpdateTranslationFromExisting) GetName() string {
 	return a.name
 }
 
+// GetModifierFn returns function which modifies translations for action
+func (a *UpdateTranslationFromExisting) GetModifierFn() TranslationModifier {
+	return a.updateTranslations
+}
+
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *UpdateTranslationFromExisting) PromptActionDetails(s *ishell.Shell) error {
-	selectedFilePaths, err := utils.PromptFiles(
-		s, "Select file(s) to update with existing translations", a.config.JSONFilePattern,
+func (a *UpdateTranslationFromExisting) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+	details := ActionDetails{}
+	selectedFilePaths, err := d.PromptFiles(
+		s, "Select file(s) to update with existing translations", d.getJSONConfig(),
 	)
 	if err != nil {
-		return err
+		return details, err
 	}
 	existingPool, err := utils.GetExistingPool()
 	if err != nil {
-		return err
+		return details, err
 	}
-	for _, path := range selectedFilePaths {
-		err := a.Perform(path, existingPool)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	details.translations = existingPool
+	details.selectedFilesPaths = selectedFilePaths
+	return details, nil
 }
 
-// Perform updates missing translations with existing one from pool
-func (a *UpdateTranslationFromExisting) Perform(filePath string, existingPool utils.Translation) error {
-	translationData, err := utils.GetJSONTranslationData(filePath)
-	if err != nil {
-		return err
-	}
-	modifiedTranslations := utils.UpdateTranslations(translationData, existingPool)
-	err = utils.SaveJSONTranslationData(filePath, modifiedTranslations)
-	if err != nil {
-		return err
-	}
-	return nil
+// UpdateTranslations updates translation from pool(existing translations)
+func (a *UpdateTranslationFromExisting) updateTranslations(data utils.Translation, d ActionDetails) utils.Translation {
+	return utils.UpdateTranslations(data, d.translations)
 }
