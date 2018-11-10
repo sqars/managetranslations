@@ -1,9 +1,5 @@
 package actions
 
-import (
-	"errors"
-)
-
 // NewSearchKey creates instance of SearchKey struct
 func NewSearchKey() *SearchKey {
 	return &SearchKey{
@@ -28,12 +24,11 @@ func (a *SearchKey) GetName() string {
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *SearchKey) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+func (a *SearchKey) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
-	s.Println("Type translation key to search:")
-	translationKey := s.ReadLine()
-	if len(translationKey) == 0 {
-		return details, errors.New("No translation key provided")
+	searchKey, err := d.PromptText(s, "Type translation key to search:")
+	if err != nil {
+		return details, err
 	}
 	return details, nil
 }

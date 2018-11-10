@@ -4,20 +4,20 @@ import (
 	"errors"
 
 	"github.com/sqars/managetranslations/config"
-	"github.com/sqars/managetranslations/utils"
 )
 
 // PromptShell represents shell inteface for PromptActionDetails
-type PromptShell interface {
+type promptShell interface {
 	ReadLine() string
 	Println(...interface{})
 	Checklist([]string, string, []int) []int
 }
 
-type filesCollector interface {
+type dataCollector interface {
 	getJSONConfig() string
 	getCSVConfig() string
-	PromptFiles(PromptShell, string, string) ([]string, error)
+	PromptFiles(promptShell, string, string) ([]string, error)
+	PromptText(promptShell, string) (string, error)
 }
 
 // NewDataCollector returns new DataCollector instance
@@ -40,8 +40,8 @@ func (d *DataCollector) getJSONConfig() string {
 }
 
 // PromptFiles asks user to select files to work with
-func (d *DataCollector) PromptFiles(s PromptShell, msg, filePattern string) (selectedFilePaths []string, err error) {
-	filePaths, err := utils.GetFilePaths(filePattern)
+func (d *DataCollector) PromptFiles(s promptShell, msg, filePattern string) (selectedFilePaths []string, err error) {
+	filePaths, err := GetFilePaths(filePattern)
 	selected := []string{}
 	if err != nil {
 		return nil, err
@@ -54,4 +54,14 @@ func (d *DataCollector) PromptFiles(s PromptShell, msg, filePattern string) (sel
 		return nil, errors.New("No files selected")
 	}
 	return selected, nil
+}
+
+// PromptText method for getting text from user
+func (d *DataCollector) PromptText(s promptShell, msg string) (string, error) {
+	s.Println(msg)
+	text := s.ReadLine()
+	if len(text) == 0 {
+		return text, errors.New("No value provided")
+	}
+	return text, nil
 }

@@ -5,10 +5,9 @@ import (
 	"testing"
 )
 
-func TestAddTranslation_addKey(t *testing.T) {
+func TestDeleteTranslation_removeKey(t *testing.T) {
 	type fields struct {
-		name     string
-		modifier TranslationModifier
+		name string
 	}
 	type args struct {
 		data Translation
@@ -32,29 +31,22 @@ func TestAddTranslation_addKey(t *testing.T) {
 					},
 				},
 				d: ActionDetails{
-					translationKey: "toAdd",
+					translationKey: "existing",
 				},
 			},
 			want: Translation{
-				"en": map[string]string{
-					"existing": "en_existing",
-					"toAdd":    "",
-				},
-				"pl": map[string]string{
-					"existing": "pl_existing",
-					"toAdd":    "",
-				},
+				"en": map[string]string{},
+				"pl": map[string]string{},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &AddTranslation{
-				name:     tt.fields.name,
-				modifier: tt.fields.modifier,
+			a := &DeleteTranslation{
+				name: tt.fields.name,
 			}
-			if got := a.addKey(tt.args.data, tt.args.d); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("AddTranslation.addKey() = %v, want %v", got, tt.want)
+			if got := a.removeKey(tt.args.data, tt.args.d); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DeleteTranslation.removeKey() = %v, want %v", got, tt.want)
 			}
 		})
 	}

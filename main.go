@@ -23,7 +23,7 @@ func main() {
 		actions.NewUpdateFromCSV(),
 	}
 
-	filesCollector := actions.NewDataCollector(config)
+	dataCollector := actions.NewDataCollector(config)
 
 	options := []string{}
 	for _, action := range appActions {
@@ -33,7 +33,7 @@ func main() {
 
 	selectedAction := appActions[optionSelected]
 
-	actionDetails, err := selectedAction.PromptActionDetails(shell, filesCollector)
+	actionDetails, err := selectedAction.PromptActionDetails(shell, dataCollector)
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -1,9 +1,5 @@
 package actions
 
-import (
-	"github.com/sqars/managetranslations/utils"
-)
-
 // NewUpdateTranslationFromExisting creates instance of UpdateTranslationFromExisting struct
 func NewUpdateTranslationFromExisting() *UpdateTranslationFromExisting {
 	return &UpdateTranslationFromExisting{
@@ -28,7 +24,7 @@ func (a *UpdateTranslationFromExisting) GetModifierFn() TranslationModifier {
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *UpdateTranslationFromExisting) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+func (a *UpdateTranslationFromExisting) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedFilePaths, err := d.PromptFiles(
 		s, "Select file(s) to update with existing translations", d.getJSONConfig(),
@@ -36,7 +32,7 @@ func (a *UpdateTranslationFromExisting) PromptActionDetails(s PromptShell, d fil
 	if err != nil {
 		return details, err
 	}
-	existingPool, err := utils.GetExistingPool()
+	existingPool, err := GetExistingPool()
 	if err != nil {
 		return details, err
 	}
@@ -46,6 +42,6 @@ func (a *UpdateTranslationFromExisting) PromptActionDetails(s PromptShell, d fil
 }
 
 // UpdateTranslations updates translation from pool(existing translations)
-func (a *UpdateTranslationFromExisting) updateTranslations(data utils.Translation, d ActionDetails) utils.Translation {
-	return utils.UpdateTranslations(data, d.translations)
+func (a *UpdateTranslationFromExisting) updateTranslations(data Translation, d ActionDetails) Translation {
+	return UpdateTranslations(data, d.translations)
 }

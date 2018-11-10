@@ -1,11 +1,5 @@
 package actions
 
-import (
-	"errors"
-
-	"github.com/sqars/managetranslations/utils"
-)
-
 // NewAddTranslation creates instance of AddTranslation struct
 func NewAddTranslation() *AddTranslation {
 	return &AddTranslation{
@@ -30,7 +24,7 @@ func (a *AddTranslation) GetModifierFn() TranslationModifier {
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *AddTranslation) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+func (a *AddTranslation) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedFilePaths, err := d.PromptFiles(
 		s, "Select file(s) to add translation key", d.getJSONConfig(),
@@ -38,10 +32,9 @@ func (a *AddTranslation) PromptActionDetails(s PromptShell, d filesCollector) (A
 	if err != nil {
 		return details, err
 	}
-	s.Println("Type translation key to add:")
-	translationKey := s.ReadLine()
-	if len(translationKey) == 0 {
-		return details, errors.New("No translation key provided")
+	translationKey, err := d.PromptText(s, "Type translation key to add:")
+	if err != nil {
+		return details, err
 	}
 	details.selectedFilesPaths = selectedFilePaths
 	details.translationKey = translationKey
@@ -49,7 +42,7 @@ func (a *AddTranslation) PromptActionDetails(s PromptShell, d filesCollector) (A
 }
 
 // Addkey adds empty translation key to translation
-func (a *AddTranslation) addKey(data utils.Translation, d ActionDetails) utils.Translation {
+func (a *AddTranslation) addKey(data Translation, d ActionDetails) Translation {
 	for lang := range data {
 		data[lang][d.translationKey] = ""
 	}

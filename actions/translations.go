@@ -1,4 +1,4 @@
-package utils
+package actions
 
 import (
 	"fmt"
@@ -6,6 +6,9 @@ import (
 
 // Translation represents translation format written in JSON file
 type Translation map[string]map[string]string
+
+// TranslationModifier represents function which modifies translations
+type TranslationModifier func(Translation, ActionDetails) Translation
 
 // GetExistingPool returns Translation which cointains all of available translations
 func GetExistingPool() (Translation, error) {

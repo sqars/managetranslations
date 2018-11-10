@@ -1,4 +1,4 @@
-package utils
+package actions
 
 import (
 	"reflect"
@@ -97,88 +97,6 @@ func Test_csvToTranslationFormat(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := csvToTranslationFormat(tt.args.data); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("csvToTranslationFormat() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestAddkey(t *testing.T) {
-	type args struct {
-		data Translation
-		key  string
-	}
-	tests := []struct {
-		name string
-		args args
-		want Translation
-	}{
-		{
-			name: "Test Case 1",
-			args: args{
-				data: Translation{
-					"en": map[string]string{
-						"existing": "en_existing",
-					},
-					"pl": map[string]string{
-						"existing": "pl_existing",
-					},
-				},
-				key: "toAdd",
-			},
-			want: Translation{
-				"en": map[string]string{
-					"existing": "en_existing",
-					"toAdd":    "",
-				},
-				"pl": map[string]string{
-					"existing": "pl_existing",
-					"toAdd":    "",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Addkey(tt.args.data, tt.args.key); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Addkey() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestRemoveKey(t *testing.T) {
-	type args struct {
-		data Translation
-		key  string
-	}
-	tests := []struct {
-		name string
-		args args
-		want Translation
-	}{
-		{
-			name: "Test Case 1",
-			args: args{
-				data: Translation{
-					"en": map[string]string{
-						"existing": "en_existing",
-					},
-					"pl": map[string]string{
-						"existing": "pl_existing",
-					},
-				},
-				key: "existing",
-			},
-			want: Translation{
-				"en": map[string]string{},
-				"pl": map[string]string{},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := RemoveKey(tt.args.data, tt.args.key); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("RemoveKey() = %v, want %v", got, tt.want)
 			}
 		})
 	}

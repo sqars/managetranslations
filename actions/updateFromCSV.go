@@ -1,9 +1,5 @@
 package actions
 
-import (
-	"github.com/sqars/managetranslations/utils"
-)
-
 // NewUpdateFromCSV creates instance of UpdateFromCSV struct
 func NewUpdateFromCSV() *UpdateFromCSV {
 	return &UpdateFromCSV{
@@ -27,7 +23,7 @@ func (a *UpdateFromCSV) GetModifierFn() TranslationModifier {
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *UpdateFromCSV) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+func (a *UpdateFromCSV) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedTransationFilePaths, err := d.PromptFiles(
 		s,
@@ -45,7 +41,7 @@ func (a *UpdateFromCSV) PromptActionDetails(s PromptShell, d filesCollector) (Ac
 	if err != nil {
 		return details, err
 	}
-	csvData, err := utils.GetCSVTranslationData(selectedCSVFilePaths)
+	csvData, err := GetCSVTranslationData(selectedCSVFilePaths)
 	if err != nil {
 		return details, err
 	}
@@ -55,6 +51,6 @@ func (a *UpdateFromCSV) PromptActionDetails(s PromptShell, d filesCollector) (Ac
 }
 
 // UpdateTranslations updates translation from pool(existing translations)
-func (a *UpdateFromCSV) updateTranslations(data utils.Translation, d ActionDetails) utils.Translation {
-	return utils.UpdateTranslations(data, d.translations)
+func (a *UpdateFromCSV) updateTranslations(data Translation, d ActionDetails) Translation {
+	return UpdateTranslations(data, d.translations)
 }

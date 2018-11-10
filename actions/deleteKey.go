@@ -3,8 +3,6 @@ package actions
 import (
 	"errors"
 	"fmt"
-
-	"github.com/sqars/managetranslations/utils"
 )
 
 // NewDeleteTranslation creates instance of DeleteTranslation struct
@@ -30,7 +28,7 @@ func (a *DeleteTranslation) GetModifierFn() TranslationModifier {
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
-func (a *DeleteTranslation) PromptActionDetails(s PromptShell, d filesCollector) (ActionDetails, error) {
+func (a *DeleteTranslation) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedFilePaths, err := d.PromptFiles(
 		s, "Choose file(s) to delete translation:", d.getJSONConfig(),
@@ -49,7 +47,7 @@ func (a *DeleteTranslation) PromptActionDetails(s PromptShell, d filesCollector)
 }
 
 // RemoveKey removes providen key from translation
-func (a *DeleteTranslation) removeKey(data utils.Translation, d ActionDetails) utils.Translation {
+func (a *DeleteTranslation) removeKey(data Translation, d ActionDetails) Translation {
 	for lang := range data {
 		_, ok := data[lang][d.translationKey]
 		if ok {
