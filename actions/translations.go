@@ -8,7 +8,7 @@ import (
 type Translation map[string]map[string]string
 
 // TranslationModifier represents function which modifies translations
-type TranslationModifier func(Translation, ActionDetails) Translation
+type translationModifier func(Translation, ActionDetails) Translation
 
 // GetExistingPool returns Translation which cointains all of available translations
 func GetExistingPool() (Translation, error) {
@@ -85,4 +85,19 @@ func UpdateTranslations(data, pool Translation) Translation {
 	}
 	fmt.Println(fmt.Sprintf("%d translation keys updated", count))
 	return data
+}
+
+func modifyAndSaveTranslations(d ActionDetails, m translationModifier) error {
+	for _, filePath := range d.selectedFilesPaths {
+		translationData, err := GetJSONTranslationData(filePath)
+		if err != nil {
+			return err
+		}
+		modifiedTranslations := m(translationData, d)
+		err = SaveJSONTranslationData(filePath, modifiedTranslations)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

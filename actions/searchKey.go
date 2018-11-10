@@ -9,13 +9,7 @@ func NewSearchKey() *SearchKey {
 
 // SearchKey struct of operation of adding translation key
 type SearchKey struct {
-	name     string
-	modifier TranslationModifier
-}
-
-// GetModifierFn returns function which modifies translations for action
-func (a *SearchKey) GetModifierFn() TranslationModifier {
-	return a.modifier
+	name string
 }
 
 // GetName returns name of Action
@@ -30,5 +24,6 @@ func (a *SearchKey) PromptActionDetails(s promptShell, d dataCollector) (ActionD
 	if err != nil {
 		return details, err
 	}
+	details.translationKey = searchKey
 	return details, nil
 }

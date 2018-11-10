@@ -17,11 +17,6 @@ func (a *UpdateFromCSV) GetName() string {
 	return a.name
 }
 
-// GetModifierFn returns function which modifies translations for action
-func (a *UpdateFromCSV) GetModifierFn() TranslationModifier {
-	return a.updateTranslations
-}
-
 // PromptActionDetails propmts for action details and runs Perform with arguments
 func (a *UpdateFromCSV) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
@@ -48,6 +43,15 @@ func (a *UpdateFromCSV) PromptActionDetails(s promptShell, d dataCollector) (Act
 	details.selectedFilesPaths = selectedTransationFilePaths
 	details.translations = csvData
 	return details, nil
+}
+
+// PerformAction Performs action using collected ActionDetails
+func (a *UpdateFromCSV) PerformAction(d ActionDetails) error {
+	err := modifyAndSaveTranslations(d, a.updateTranslations)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpdateTranslations updates translation from pool(existing translations)

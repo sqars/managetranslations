@@ -9,18 +9,12 @@ func NewUpdateTranslationFromExisting() *UpdateTranslationFromExisting {
 
 // UpdateTranslationFromExisting struct of operation of updating empty translations from existing pool
 type UpdateTranslationFromExisting struct {
-	name     string
-	modifier TranslationModifier
+	name string
 }
 
 // GetName returns name of Action
 func (a *UpdateTranslationFromExisting) GetName() string {
 	return a.name
-}
-
-// GetModifierFn returns function which modifies translations for action
-func (a *UpdateTranslationFromExisting) GetModifierFn() TranslationModifier {
-	return a.updateTranslations
 }
 
 // PromptActionDetails propmts for action details and runs Perform with arguments
@@ -39,6 +33,15 @@ func (a *UpdateTranslationFromExisting) PromptActionDetails(s promptShell, d dat
 	details.translations = existingPool
 	details.selectedFilesPaths = selectedFilePaths
 	return details, nil
+}
+
+// PerformAction Performs action using collected ActionDetails
+func (a *UpdateTranslationFromExisting) PerformAction(d ActionDetails) error {
+	err := modifyAndSaveTranslations(d, a.updateTranslations)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpdateTranslations updates translation from pool(existing translations)

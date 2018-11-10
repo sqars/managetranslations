@@ -22,11 +22,6 @@ func (a *DeleteTranslation) GetName() string {
 	return a.name
 }
 
-// GetModifierFn returns function which modifies translations for action
-func (a *DeleteTranslation) GetModifierFn() TranslationModifier {
-	return a.removeKey
-}
-
 // PromptActionDetails propmts for action details and runs Perform with arguments
 func (a *DeleteTranslation) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
@@ -44,6 +39,15 @@ func (a *DeleteTranslation) PromptActionDetails(s promptShell, d dataCollector) 
 	details.selectedFilesPaths = selectedFilePaths
 	details.translationKey = translationKey
 	return details, nil
+}
+
+// PerformAction Performs action using collected ActionDetails
+func (a *DeleteTranslation) PerformAction(d ActionDetails) error {
+	err := modifyAndSaveTranslations(d, a.removeKey)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // RemoveKey removes providen key from translation

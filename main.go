@@ -37,7 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = actionDetails.PerformAction(selectedAction.GetModifierFn())
+	err = selectedAction.PerformAction(actionDetails)
 	if err != nil {
 		log.Fatalln(err)
 	}

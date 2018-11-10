@@ -27,6 +27,7 @@ func NewDataCollector(conf config.Config) *DataCollector {
 	}
 }
 
+// DataCollector is used to collect necesary input from user, includes app config
 type DataCollector struct {
 	config config.Config
 }
