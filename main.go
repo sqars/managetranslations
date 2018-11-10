@@ -21,6 +21,7 @@ func main() {
 		actions.NewDeleteTranslation(),
 		actions.NewUpdateTranslationFromExisting(),
 		actions.NewUpdateFromCSV(),
+		actions.NewFindMissingTranslations(),
 	}
 
 	dataCollector := actions.NewDataCollector(config)

@@ -1,5 +1,9 @@
 package actions
 
+import (
+	"fmt"
+)
+
 // NewSearchKey creates instance of SearchKey struct
 func NewSearchKey() *SearchKey {
 	return &SearchKey{
@@ -24,6 +28,28 @@ func (a *SearchKey) PromptActionDetails(s promptShell, d dataCollector) (ActionD
 	if err != nil {
 		return details, err
 	}
+	paths, err := GetFilePaths(d.getJSONConfig())
+	if err != nil {
+		return details, err
+	}
+	details.selectedFilesPaths = paths
 	details.translationKey = searchKey
 	return details, nil
+}
+
+// PerformAction searchs for translation key within all files
+func (a *SearchKey) PerformAction(d ActionDetails) error {
+	for _, filePath := range d.selectedFilesPaths {
+		trasnaltion, err := GetJSONTranslationData(filePath)
+		if err != nil {
+			return err
+		}
+		for lang, values := range trasnaltion {
+			_, ok := values[d.translationKey]
+			if ok {
+				fmt.Println(fmt.Sprintf(`Found "%s" lang "%s" in %s`, d.translationKey, lang, filePath))
+			}
+		}
+	}
+	return nil
 }
