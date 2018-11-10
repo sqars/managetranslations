@@ -11,6 +11,7 @@ import (
 type Config struct {
 	JSONFilePattern string
 	CSVFilePattern  string
+	Languages       []string `json:"languages"`
 }
 
 // newDefault creates new Config instance with default values
@@ -18,6 +19,7 @@ func newDefault() Config {
 	return Config{
 		JSONFilePattern: "/*i18n*",
 		CSVFilePattern:  "/*.csv",
+		Languages:       []string{"en"},
 	}
 }
 

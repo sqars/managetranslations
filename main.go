@@ -16,12 +16,13 @@ func main() {
 	shell := ishell.New()
 
 	appActions := []actions.Action{
-		actions.NewSearchKey(),
-		actions.NewAddTranslation(),
-		actions.NewDeleteTranslation(),
-		actions.NewUpdateTranslationFromExisting(),
-		actions.NewUpdateFromCSV(),
-		actions.NewFindMissingTranslations(),
+		actions.NewSearchKey(config),
+		actions.NewAddTranslation(config),
+		actions.NewDeleteTranslation(config),
+		actions.NewUpdateTranslationFromExisting(config),
+		actions.NewUpdateFromCSV(config),
+		actions.NewFindMissingTranslations(config),
+		actions.NewExportToCSV(config),
 	}
 
 	dataCollector := actions.NewDataCollector(config)

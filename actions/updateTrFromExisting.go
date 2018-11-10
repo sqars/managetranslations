@@ -1,15 +1,19 @@
 package actions
 
+import "github.com/sqars/managetranslations/config"
+
 // NewUpdateTranslationFromExisting creates instance of UpdateTranslationFromExisting struct
-func NewUpdateTranslationFromExisting() *UpdateTranslationFromExisting {
+func NewUpdateTranslationFromExisting(conf config.Config) *UpdateTranslationFromExisting {
 	return &UpdateTranslationFromExisting{
 		name: "Update empty translations from existing pool",
+		conf: conf,
 	}
 }
 
 // UpdateTranslationFromExisting struct of operation of updating empty translations from existing pool
 type UpdateTranslationFromExisting struct {
 	name string
+	conf config.Config
 }
 
 // GetName returns name of Action
@@ -21,7 +25,7 @@ func (a *UpdateTranslationFromExisting) GetName() string {
 func (a *UpdateTranslationFromExisting) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedFilePaths, err := d.PromptFiles(
-		s, "Select file(s) to update with existing translations", d.getJSONConfig(),
+		s, "Select file(s) to update with existing translations", a.conf.JSONFilePattern,
 	)
 	if err != nil {
 		return details, err

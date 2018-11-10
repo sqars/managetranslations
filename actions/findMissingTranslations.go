@@ -2,18 +2,22 @@ package actions
 
 import (
 	"fmt"
+
+	"github.com/sqars/managetranslations/config"
 )
 
 // NewFindMissingTranslations creates instance of FindMissingTranslations struct
-func NewFindMissingTranslations() *FindMissingTranslations {
+func NewFindMissingTranslations(conf config.Config) *FindMissingTranslations {
 	return &FindMissingTranslations{
 		name: "Find missing translations",
+		conf: conf,
 	}
 }
 
 // FindMissingTranslations struct of operation of finding all missing translations
 type FindMissingTranslations struct {
 	name string
+	conf config.Config
 }
 
 // GetName returns name of Action
@@ -24,7 +28,7 @@ func (a *FindMissingTranslations) GetName() string {
 // PromptActionDetails propmts for action details and runs Perform with arguments
 func (a *FindMissingTranslations) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
-	paths, err := GetFilePaths(d.getJSONConfig())
+	paths, err := GetFilePaths(a.conf.JSONFilePattern)
 	if err != nil {
 		return details, err
 	}

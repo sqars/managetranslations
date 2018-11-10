@@ -3,18 +3,22 @@ package actions
 import (
 	"errors"
 	"fmt"
+
+	"github.com/sqars/managetranslations/config"
 )
 
 // NewDeleteTranslation creates instance of DeleteTranslation struct
-func NewDeleteTranslation() *DeleteTranslation {
+func NewDeleteTranslation(conf config.Config) *DeleteTranslation {
 	return &DeleteTranslation{
 		name: "Delete translation key",
+		conf: conf,
 	}
 }
 
 // DeleteTranslation struct of operation of removing translation key
 type DeleteTranslation struct {
 	name string
+	conf config.Config
 }
 
 // GetName returns name of Action
@@ -26,7 +30,7 @@ func (a *DeleteTranslation) GetName() string {
 func (a *DeleteTranslation) PromptActionDetails(s promptShell, d dataCollector) (ActionDetails, error) {
 	details := ActionDetails{}
 	selectedFilePaths, err := d.PromptFiles(
-		s, "Choose file(s) to delete translation:", d.getJSONConfig(),
+		s, "Choose file(s) to delete translation:", a.conf.JSONFilePattern,
 	)
 	if err != nil {
 		return details, err

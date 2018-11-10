@@ -2,18 +2,22 @@ package actions
 
 import (
 	"fmt"
+
+	"github.com/sqars/managetranslations/config"
 )
 
 // NewSearchKey creates instance of SearchKey struct
-func NewSearchKey() *SearchKey {
+func NewSearchKey(conf config.Config) *SearchKey {
 	return &SearchKey{
 		name: "Search translation key",
+		conf: conf,
 	}
 }
 
 // SearchKey struct of operation of adding translation key
 type SearchKey struct {
 	name string
+	conf config.Config
 }
 
 // GetName returns name of Action
@@ -28,7 +32,7 @@ func (a *SearchKey) PromptActionDetails(s promptShell, d dataCollector) (ActionD
 	if err != nil {
 		return details, err
 	}
-	paths, err := GetFilePaths(d.getJSONConfig())
+	paths, err := GetFilePaths(a.conf.JSONFilePattern)
 	if err != nil {
 		return details, err
 	}

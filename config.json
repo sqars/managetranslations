@@ -1,4 +1,9 @@
 {
 	"JSONFilePattern": "/*i18n*",
-	"CSVFilePattern": "/*.csv"
+	"CSVFilePattern": "/*.csv",
+	"languages": [
+		"en",
+		"pl",
+		"sv"
+	]
 }

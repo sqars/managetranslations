@@ -1,15 +1,19 @@
 package actions
 
+import "github.com/sqars/managetranslations/config"
+
 // NewUpdateFromCSV creates instance of UpdateFromCSV struct
-func NewUpdateFromCSV() *UpdateFromCSV {
+func NewUpdateFromCSV(conf config.Config) *UpdateFromCSV {
 	return &UpdateFromCSV{
 		name: "Update empty translations from CSV file",
+		conf: conf,
 	}
 }
 
 // UpdateFromCSV struct of operation of updating empty translations from CSV file
 type UpdateFromCSV struct {
 	name string
+	conf config.Config
 }
 
 // GetName returns name of Action
@@ -23,7 +27,7 @@ func (a *UpdateFromCSV) PromptActionDetails(s promptShell, d dataCollector) (Act
 	selectedTransationFilePaths, err := d.PromptFiles(
 		s,
 		"Select translation file(s) to update from CSV",
-		d.getJSONConfig(),
+		a.conf.JSONFilePattern,
 	)
 	if err != nil {
 		return details, err
@@ -31,7 +35,7 @@ func (a *UpdateFromCSV) PromptActionDetails(s promptShell, d dataCollector) (Act
 	selectedCSVFilePaths, err := d.PromptFiles(
 		s,
 		"Select CSV file(s) with translations",
-		d.getCSVConfig(),
+		a.conf.CSVFilePattern,
 	)
 	if err != nil {
 		return details, err

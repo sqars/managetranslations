@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/sqars/managetranslations/config"
+	"github.com/sqars/managetranslations/utils"
 )
 
 // PromptShell represents shell inteface for PromptActionDetails
@@ -14,8 +15,6 @@ type promptShell interface {
 }
 
 type dataCollector interface {
-	getJSONConfig() string
-	getCSVConfig() string
 	PromptFiles(promptShell, string, string) ([]string, error)
 	PromptText(promptShell, string) (string, error)
 }
@@ -32,14 +31,6 @@ type DataCollector struct {
 	config config.Config
 }
 
-func (d *DataCollector) getCSVConfig() string {
-	return d.config.CSVFilePattern
-}
-
-func (d *DataCollector) getJSONConfig() string {
-	return d.config.JSONFilePattern
-}
-
 // PromptFiles asks user to select files to work with
 func (d *DataCollector) PromptFiles(s promptShell, msg, filePattern string) (selectedFilePaths []string, err error) {
 	filePaths, err := GetFilePaths(filePattern)
@@ -47,9 +38,15 @@ func (d *DataCollector) PromptFiles(s promptShell, msg, filePattern string) (sel
 	if err != nil {
 		return nil, err
 	}
+	filePaths = append([]string{"All files"}, filePaths...)
 	selectedFilePathIdx := s.Checklist(filePaths, msg, []int{})
-	for _, filePathIdx := range selectedFilePathIdx {
-		selected = append(selected, filePaths[filePathIdx])
+	filePaths = filePaths[1:]
+	if utils.ContainsInt(selectedFilePathIdx, 0) {
+		selected = filePaths
+	} else {
+		for _, filePathIdx := range selectedFilePathIdx {
+			selected = append(selected, filePaths[filePathIdx])
+		}
 	}
 	if len(selected) == 0 {
 		return nil, errors.New("No files selected")
