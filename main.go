@@ -23,6 +23,7 @@ func main() {
 		actions.NewUpdateFromCSV(config),
 		actions.NewFindMissingTranslations(config),
 		actions.NewExportToCSV(config),
+		actions.NewEImportFromCSV(config),
 	}
 
 	dataCollector := actions.NewDataCollector(config)

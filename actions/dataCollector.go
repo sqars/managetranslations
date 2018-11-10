@@ -40,7 +40,6 @@ func (d *DataCollector) PromptFiles(s promptShell, msg, filePattern string) (sel
 	}
 	filePaths = append([]string{"All files"}, filePaths...)
 	selectedFilePathIdx := s.Checklist(filePaths, msg, []int{})
-	filePaths = filePaths[1:]
 	if utils.ContainsInt(selectedFilePathIdx, 0) {
 		selected = filePaths
 	} else {
@@ -48,6 +47,7 @@ func (d *DataCollector) PromptFiles(s promptShell, msg, filePattern string) (sel
 			selected = append(selected, filePaths[filePathIdx])
 		}
 	}
+	selected = utils.FilterStr(selected, "All files")
 	if len(selected) == 0 {
 		return nil, errors.New("No files selected")
 	}

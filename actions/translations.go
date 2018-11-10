@@ -89,15 +89,23 @@ func UpdateTranslations(data, pool Translation) Translation {
 
 func modifyAndSaveTranslations(d ActionDetails, m translationModifier) error {
 	for _, filePath := range d.selectedFilesPaths {
-		translationData, err := GetJSONTranslationData(filePath)
+		err := modifyAndSavetranslation(filePath, m, d)
 		if err != nil {
 			return err
 		}
-		modifiedTranslations := m(translationData, d)
-		err = SaveJSONTranslationData(filePath, modifiedTranslations)
-		if err != nil {
-			return err
-		}
+	}
+	return nil
+}
+
+func modifyAndSavetranslation(path string, m translationModifier, d ActionDetails) error {
+	translationData, err := GetJSONTranslationData(path)
+	if err != nil {
+		return err
+	}
+	modifiedTranslations := m(translationData, d)
+	err = SaveJSONTranslationData(path, modifiedTranslations)
+	if err != nil {
+		return err
 	}
 	return nil
 }

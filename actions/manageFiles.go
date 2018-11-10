@@ -71,6 +71,14 @@ func GetCSVTranslationData(paths []string) (translation Translation, err error) 
 
 // GetSingleCSVTranslationData opens CSV file and returns struct with translation
 func GetSingleCSVTranslationData(path string) (translation Translation, err error) {
+	data, err := readCSVFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return csvToTranslationFormat(data), nil
+}
+
+func readCSVFile(path string) ([][]string, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -89,7 +97,7 @@ func GetSingleCSVTranslationData(path string) (translation Translation, err erro
 		}
 		data = append(data, line)
 	}
-	return csvToTranslationFormat(data), nil
+	return data, nil
 }
 
 // SaveJSONTranslationData saves modified translation data to file

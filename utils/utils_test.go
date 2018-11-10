@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -77,6 +78,56 @@ func TestContainsInt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ContainsInt(tt.args.s, tt.args.v); got != tt.want {
 				t.Errorf("ContainsInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGroupByIdxValue(t *testing.T) {
+	type args struct {
+		d   [][]string
+		idx int
+	}
+	tests := []struct {
+		name string
+		args args
+		want map[string][][]string
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				d: [][]string{
+					[]string{"val1", "toGroup1"},
+					[]string{"val2", "toGroup1"},
+					[]string{"val3", "toGroup1"},
+					[]string{"val4", "toGroup1"},
+					[]string{"val5", "toGroup2"},
+					[]string{"val2", "toGroup2"},
+					[]string{"val6", "toGroup3"},
+				},
+				idx: 1,
+			},
+			want: map[string][][]string{
+				"toGroup1": [][]string{
+					[]string{"val1", "toGroup1"},
+					[]string{"val2", "toGroup1"},
+					[]string{"val3", "toGroup1"},
+					[]string{"val4", "toGroup1"},
+				},
+				"toGroup2": [][]string{
+					[]string{"val5", "toGroup2"},
+					[]string{"val2", "toGroup2"},
+				},
+				"toGroup3": [][]string{
+					[]string{"val6", "toGroup3"},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GroupByIdxValue(tt.args.d, tt.args.idx); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GroupByIdxValue() = %v, want %v", got, tt.want)
 			}
 		})
 	}
